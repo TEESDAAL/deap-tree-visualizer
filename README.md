@@ -47,7 +47,7 @@ self\
 ```
 Since new drawing functions/predicates override the old ones, the default flow looks like this:
 1. If the function has an `arity` of 0 (is a terminal in the tree) and is not an argument, don't draw anything at at all
-2. If the image "is an image" the default assumes any 2D array is an image
-3. Otherwise draw it as text (`lambda _: True`) acts as a catch all.
+2. If the value "is an image" the default assumes any 2D array is an image
+3. Otherwise draw the value as text (`lambda _: True`) acts as a catch all.
 
 If these defaults don't work for you, you can use `TreeDrawer().clear_defaults()` and then register all new draw functions.

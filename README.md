@@ -53,7 +53,7 @@ Since new drawing functions/predicates override the old ones, the default flow l
 If these defaults don't work for you, you can use `TreeDrawer().clear_defaults()` and then register all new draw functions.
 
 ## Notes
-To try an minimise syntax in the register function, if the predicate raises an exception it is assumed to be false. This means that you can write: 
+To try and minimise syntax in the register function, if the predicate raises an exception it is assumed to be false. This means that you can write: 
 ```python
 TreeDrawer().register_draw_function(
     lambda tree: math.sqrt(tree.value).is_integer(),

@@ -44,33 +44,56 @@ class Tree[T]:
     @staticmethod
     def of(model: list[TreeNode], pset: gp.PrimitiveSetTyped) -> 'Tree':
         """
-        Save the graph visualization of the
+        Create a new tree from a given gp individual and the pset.
 
         Parameters
         ----------
-        img : npt.ArrayLike | PIL.Image.Image
-            The image to display, can be anything renderable by pyplot imshow.
-        save_to : str
-            The filepath to save to
-        title : str
-            The title to give the image, empty by default
+        model : list[gp.Primitive | gp.Terminal]
+            The gp model to display
+        pset : gp.PrimitiveSetTyped
+            The pset associated with the model
         """
-        return Tree.construct_tree(model, pset, Box(0))
+        return Tree._construct_tree(model, pset, Box(0))
 
     @staticmethod
-    def construct_tree(model: list[TreeNode], pset: gp.PrimitiveSetTyped, index: Box[int]) -> "Tree":
+    def _construct_tree(model: list[TreeNode], pset: gp.PrimitiveSetTyped, index: Box[int]) -> "Tree":
         function = model[index.value]
         index.value += 1
-        return Tree(function, [Tree.construct_tree(model, pset, index) for _ in range(function.arity)], pset)
+        return Tree(function, [Tree._construct_tree(model, pset, index) for _ in range(function.arity)], pset)
 
 
     def __repr__(self) -> str:
+        """
+        Convert the tree into a string representation, should be the same as the original model
+
+        Returns
+        -------
+        str
+            The string representation of the tree (can be compiled by gp.compile)
+        """
         return self.function.format(*self.children)
 
     def compile(self) -> Callable[..., T]:
+        """
+        Convert the tree into a runnable function
+
+        Returns
+        -------
+        Callable[..., T]
+            The function version of this tree.
+        """
         return gp.compile(self, pset=self.pset)
 
     def id(self) -> str:
+        """
+        A unique identifier for this model (uses the memory address/id function).
+
+        Returns
+        -------
+        str
+            A unique identifier for this object.
+        """
+
         return str(id(self))
 
     def _evaluate_all_nodes(self, *args) -> Any:
@@ -80,6 +103,14 @@ class Tree[T]:
             child._evaluate_all_nodes(*args)
 
     def nodes(self) -> list["Tree"]:
+        """
+        Returns a flattened version of the tree
+
+        Returns
+        -------
+        list[Tree]
+            A list of nodes, which is all nodes in this tree, in recursive depth first order
+        """
         return [self] + sum((child.nodes() for child in self.children), [])
 
 
@@ -170,13 +201,13 @@ class TreeDrawer:
         else:
             graph.add_node(tree.id(), label=tree.function.name)
 
-        self._displayvalue(tree, graph)
+        self._display_value(tree, graph)
 
         for child in tree.children:
             self._populate_graph(child, graph)
             graph.add_edge(tree.id(), child.id(), dir="back")
 
-    def _displayvalue(self, tree: Tree, graph: pgv.AGraph) -> None:
+    def _display_value(self, tree: Tree, graph: pgv.AGraph) -> None:
         for predicate, draw_function in self.drawing_method:
             try:
                 if predicate(tree):
@@ -245,6 +276,7 @@ def is_image(value: Any) -> bool:
 
     Returns
     -------
+    bool
         True if it meets this opinionated condition for being rendered as an image.
     """
 

@@ -51,3 +51,20 @@ Since new drawing functions/predicates override the old ones, the default flow l
 3. Otherwise draw the value as text (`lambda _: True`) acts as a catch all.
 
 If these defaults don't work for you, you can use `TreeDrawer().clear_defaults()` and then register all new draw functions.
+
+## Notes
+To try an minimise syntax in the register function, if the predicate raises an exception it is assumed to be false. This means that you can write: 
+```python
+TreeDrawer().register_draw_function(
+    lambda tree: math.sqrt(tree.value).is_integer(),
+    lambda graph, tree: draw_text(graph, tree, f"{tree.value} is a perfect square!")
+)
+```
+instead of:
+```python
+TreeDrawer().register_draw_function(
+    lambda tree: (isinstance(tree.value, int) or isinstance(tree.value, float) and math.sqrt(tree.value).is_integer(),
+    lambda graph, tree: draw_text(graph, tree, f"{tree.value} is a perfect square!")
+)
+```
+But this does come with potential evil of hiding errors (although it does print them to the console) so be warned!

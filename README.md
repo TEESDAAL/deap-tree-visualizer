@@ -10,7 +10,7 @@ tree = Tree.of(gp_individual_to_visualise, pset)
 ## TreeDrawer
 A class that takes a given tree, and draws it for some input. eg.
 ```python
-TreeDrawer().save_graph("base_tree_drawer_example.png", tree, 7)
+TreeDrawer().save_graph("file/path/to_save/the_image", tree, input_1, ..., input_n)
 ```
 The `TreeDrawer` is designed to be extensible if you want it, as shown in the [Examples](##examples).
 

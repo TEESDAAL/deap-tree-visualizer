@@ -23,7 +23,8 @@ TreeDrawer().save_graph("base_tree_drawer_example.png", tree, 7)
 ```
 ![drawing symbolic regression without any changes, for the input 7](./examples/base_tree_drawer_example.png)
 
-Now you may say "Hold on those numbers look a little ugly, maybe my visualisation should round these numbers" of course you may not say this, but too bad!
+Now you may say "Hold on those numbers look a little ugly, maybe my visualisation should round these numbers" of course you may not say actually say this.
+
 This is as simple as:
 ```python
 round_drawer = TreeDrawer().register_draw_function(

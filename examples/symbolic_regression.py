@@ -2,7 +2,7 @@ import sys
 # hack to import from parent directory
 sys.path.append("../")
 
-from deap_tree import Tree, TreeDrawer
+from deap_tree import Tree, TreeDrawer, draw_text
 # This code is grabbed from the deap examples page (https://github.com/DEAP/deap/blob/0ebb47e34298885840fa7474fa9ffb9c7d7f2c8d/examples/gp/symbreg.py)
 
 import operator
@@ -89,5 +89,11 @@ if __name__ == "__main__":
     tree = Tree.of(best_individual, pset)
     # Visualise for some specific input
     TreeDrawer().save_graph("base_tree_drawer_example.png", tree, 7)
+    round_drawer = TreeDrawer().register_draw_function(
+        lambda tree: isinstance(tree.value, float),
+        lambda graph, tree: draw_text(graph, tree, round(tree.value, 2))
+    )
+
+    round_drawer.save_graph("rounded_tree_drawer_example.png", tree, 7)
 
 

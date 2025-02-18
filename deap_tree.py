@@ -12,7 +12,8 @@ type image = npt.ArrayLike | PIL.Image.Image
 @dataclass
 class Box[T]:
     """
-    A mutable holder of some value
+    A mutable holder of some value.
+
     Attributes
     ----------
     value : T
@@ -23,7 +24,7 @@ class Box[T]:
 @dataclass
 class Tree[T]:
     """
-    A tree representation of a given deap GP model
+    A tree representation of a given deap GP model.
 
     Attributes
     ----------
@@ -121,11 +122,11 @@ class TreeDrawer:
     def __post_init__(self):
         self.drawing_method = []
         self\
-        .register_draw_function(lambda _: True, draw_text)\
-        .register_draw_function(lambda t: is_image(t.value), draw_image)\
-        .register_draw_function(lambda t: t.function.arity == 0 and "ARG" not in t.function.name, lambda *_: None)
+            .register_draw_function(lambda _: True, draw_text)\
+            .register_draw_function(lambda t: is_image(t.value), draw_image)\
+            .register_draw_function(lambda t: t.function.arity == 0 and "ARG" not in t.function.name, lambda *_: None)
 
-    def clear_set_drawing_methods(self) -> Self:
+    def clear_defaults(self) -> Self:
         """
         Clear the preset drawing methods.
 

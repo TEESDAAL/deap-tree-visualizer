@@ -23,7 +23,7 @@ TreeDrawer().save_graph("base_tree_drawer_example.png", tree, 7)
 ```
 ![drawing symbolic regression without any changes, for the input 7](./examples/base_tree_drawer_example.png)
 
-Now you may say "Hold on those numbers look a little ugly, maybe my visualisation should round these numbers" of course you may not say actually say this.
+Now you may say; "Hold on those numbers look a little ugly, maybe my visualisation should round these numbers".
 
 This is as simple as:
 ```python
@@ -36,7 +36,7 @@ round_drawer.save_graph("rounded_tree_drawer_example.png", tree, 7)
 ```
 ![drawing symbolic regression with rounding, for the input 7](./examples/rounded_tree_drawer_example.png)
 
-We can add custom drawing functions with the `register_draw_function`, the first argument tells us when to use our custom drawing method (in this case if the value stored in that tree node is a float. And then second is what to draw if that condition is true. For your convience this library also has `draw_text` and `draw_image` functions which you can import.
+We can add custom drawing functions with the `register_draw_function`, the first argument tells us when to use our custom drawing method (in this case if the value stored in that tree node is a float. And then second is what to draw if that condition is true. For your convience this library also has `draw_text` and `draw_image` functions which you can import. But adding any pygraphviz node to the graph will also work.
 
 The current defaults are set as so:
 ```python

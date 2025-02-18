@@ -38,11 +38,11 @@ class Tree[T]:
     """
     function: TreeNode
     children: list["Tree"]
-    pset: gp.PrimitiveSetTyped
+    pset: gp.PrimitiveSetTyped | gp.PrimitiveSet
     value: Optional[T] = None
 
     @staticmethod
-    def of(model: list[TreeNode], pset: gp.PrimitiveSetTyped) -> 'Tree':
+    def of(model: list[TreeNode], pset: gp.PrimitiveSetTyped | gp.PrimitiveSet) -> 'Tree':
         """
         Create a new tree from a given gp individual and the pset.
 
@@ -56,7 +56,7 @@ class Tree[T]:
         return Tree._construct_tree(model, pset, Box(0))
 
     @staticmethod
-    def _construct_tree(model: list[TreeNode], pset: gp.PrimitiveSetTyped, index: Box[int]) -> "Tree":
+    def _construct_tree(model: list[TreeNode], pset: gp.PrimitiveSetTyped | gp.PrimitiveSet, index: Box[int]) -> "Tree":
         function = model[index.value]
         index.value += 1
         return Tree(function, [Tree._construct_tree(model, pset, index) for _ in range(function.arity)], pset)
@@ -121,7 +121,7 @@ class TreeDrawer:
     def __post_init__(self):
         self.drawing_method = []
         self\
-        .register_draw_function(lambda _: True, lambda g, t: draw_text(g, t, str(t.value)))\
+        .register_draw_function(lambda _: True, draw_text)\
         .register_draw_function(lambda t: is_image(t.value), draw_image)\
         .register_draw_function(lambda t: t.function.arity == 0 and "ARG" not in t.function.name, lambda *_: None)
 
@@ -282,7 +282,7 @@ def is_image(value: Any) -> bool:
 
     return isinstance(value, PIL.Image.Image) or isinstance(value, np.ndarray) and len(value.shape) == 2
 
-def draw_image(graph: pgv.AGraph, tree: Tree[image]) -> None:
+def draw_image(graph: pgv.AGraph, tree: Tree[Any], image: Optional[image]=None) -> None:
     """
     Add an image to the to the given graph with an id of f"{tree.id()}result".
 
@@ -293,15 +293,19 @@ def draw_image(graph: pgv.AGraph, tree: Tree[image]) -> None:
     tree : Tree[image]
         The tree to get the image to draw from.
     """
-    if tree.value is None:
+    if image is None:
+        assert is_image(tree.value)
+        image = tree.value
+
+    if image is None:
         raise ValueError("Tried to draw an image for a tree which has not been evaluated.\nMake sure to use `TreeDrawer().get_graph(tree, ...)`, or `tree._evaluate_all_nodes(...)` before running this.")
 
-    save_img(tree.value, save_to=f'_treedata/{tree.id()}.png')
+    save_img(image, save_to=f'_treedata/{tree.id()}.png')
 
     graph.add_node(f"{tree.id()}result", image=f'_treedata/{tree.id()}.png', label="", imagescale=True, fixedsize=True, shape="plaintext", width=2, height=2)
 
 
-def draw_text(graph: pgv.AGraph, tree: Tree[Any], text: str) -> None:
+def draw_text(graph: pgv.AGraph, tree: Tree[Any], text: Optional[str]=None) -> None:
     """
     Draw the given text to the graph.
 
@@ -314,6 +318,7 @@ def draw_text(graph: pgv.AGraph, tree: Tree[Any], text: str) -> None:
     text : str
         The text to draw to the graph
     """
-
+    if text is None:
+        text = str(tree.value)
     graph.add_node(f"{tree.id()}result", label=f"{text}", shape="plaintext")
 

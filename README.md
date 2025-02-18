@@ -23,7 +23,7 @@ TreeDrawer().save_graph("base_tree_drawer_example.png", tree, 7)
 ```
 ![drawing symbolic regression without any changes, for the input 7](./examples/base_tree_drawer_example.png)
 
-Now you may say "Hold on those numbers look a little ugly, maybe my visualisation should round these numbers" of course you may not say this, so if you didn't too bad!
+Now you may say "Hold on those numbers look a little ugly, maybe my visualisation should round these numbers" of course you may not say this, but too bad!
 This is as simple as:
 ```python
 round_drawer = TreeDrawer().register_draw_function(
@@ -35,4 +35,18 @@ round_drawer.save_graph("rounded_tree_drawer_example.png", tree, 7)
 ```
 ![drawing symbolic regression with rounding, for the input 7](./examples/rounded_tree_drawer_example.png)
 
-We can add custom drawing functions with the `register_draw_function`, the first argument tells us when to use our custom drawing method (in this case if the value stored in that tree node is a float. And then second is what to draw if that condition is true. For your convience the library also has draw_text and draw_image which you can import.
+We can add custom drawing functions with the `register_draw_function`, the first argument tells us when to use our custom drawing method (in this case if the value stored in that tree node is a float. And then second is what to draw if that condition is true. For your convience this library also has `draw_text` and `draw_image` functions which you can import.
+
+The current defaults are set as so:
+```python
+self\
+    .register_draw_function(lambda _: True, draw_text)\
+    .register_draw_function(lambda t: is_image(t.value), draw_image)\
+    .register_draw_function(lambda t: t.function.arity == 0 and "ARG" not in t.function.name, lambda *_: None)
+```
+Since new drawing functions/predicates override the old ones, the default flow looks like this:
+1. If the function has an `arity` of 0 (is a terminal in the tree) and is not an argument, don't draw anything at at all
+2. If the image "is an image" the default assumes any 2D array is an image
+3. Otherwise draw it as text (`lambda _: True`) acts as a catch all.
+
+If these defaults don't work for you, you can use `TreeDrawer().clear_defaults()` and then register all new draw functions.

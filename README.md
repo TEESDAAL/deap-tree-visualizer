@@ -18,7 +18,7 @@ The `TreeDrawer` is designed to be extensible if you want it, as shown in the [E
 ### Symbolic Regression
 ```python
 tree = Tree.of(best_individual, pset)
-# Visualise for some specific input
+# Visualise for some specific input, in this case x=7
 TreeDrawer().save_graph("base_tree_drawer_example.png", tree, 7)
 ```
 ![drawing symbolic regression without any changes, for the input 7](./examples/base_tree_drawer_example.png)

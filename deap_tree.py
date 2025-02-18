@@ -97,11 +97,11 @@ class Tree[T]:
 
         return str(id(self))
 
-    def _evaluate_all_nodes(self, *args) -> Any:
-        self.value = self.compile()(*args)
+    def _evaluate_all_nodes(self, *inputs) -> Any:
+        self.value = self.compile()(*inputs)
 
         for child in self.children:
-            child._evaluate_all_nodes(*args)
+            child._evaluate_all_nodes(*inputs)
 
     def nodes(self) -> list["Tree"]:
         """
@@ -157,7 +157,7 @@ class TreeDrawer:
         self.drawing_method.insert(0, (predicate, draw_function))
         return self
 
-    def save_graph(self, file: str, tree: Tree, *args: Any) -> None:
+    def save_graph(self, file: str, tree: Tree, *inputs: Any) -> None:
         """
         Save the graph visualization of this tree for a given input(s).
 
@@ -167,13 +167,13 @@ class TreeDrawer:
             The filepath to save to.
         tree : Tree
              The tree to convert into a graph.
-        *args : Any
-            The arguments to pass into the tree to visualize.
+        *inputs : Any
+            The inputs to into the tree/function to visualize.
         """
-        self.get_graph(tree, *args).draw(file)
+        self.get_graph(tree, *inputs).draw(file)
 
 
-    def get_graph(self, tree: Tree, *args: Any) -> pgv.AGraph:
+    def get_graph(self, tree: Tree, *inputs: Any) -> pgv.AGraph:
         """
         Get the graph visualization of this tree for a given input(s).
 
@@ -181,10 +181,10 @@ class TreeDrawer:
         ----------
         tree : Tree
              The tree to convert into a graph.
-        *args : Any
-            The arguments to pass into the tree to visualize.
+        *inputs : Any
+            The inputs to pass into the tree to visualize.
         """
-        tree._evaluate_all_nodes(*args)
+        tree._evaluate_all_nodes(*inputs)
 
         graph = pgv.AGraph(strict=False, directed=True)
 
